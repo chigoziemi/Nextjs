@@ -1,26 +1,36 @@
-// import { db } from "@vercel/postgres";
+import { createClient } from '@supabase/supabase-js';
 
-// const client = await db.connect();
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-// async function listInvoices() {
-// 	const data = await client.sql`
-//     SELECT invoices.amount, customers.name
-//     FROM invoices
-//     JOIN customers ON invoices.customer_id = customers.id
-//     WHERE invoices.amount = 666;
-//   `;
+async function listInvoices() {
+  try {
+    const { data, error } = await supabase
+      .from('invoices')
+      .select('amount, customers(name)')
+      .eq('amount', 666) // Adjust condition as needed
 
-// 	return data.rows;
-// }
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching invoices:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
 
 export async function GET() {
-  return Response.json({
-    message:
-      'Uncomment this file and remove this line. You can delete this file when you are finished.',
-  });
-  // try {
-  // 	return Response.json(await listInvoices());
-  // } catch (error) {
-  // 	return Response.json({ error }, { status: 500 });
-  // }
+  try {
+    const invoices = await listInvoices();
+    return new Response(JSON.stringify(invoices), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }
