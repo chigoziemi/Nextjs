@@ -46,29 +46,29 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 //   }
 // }
 
-export async function fetchCardData() {
-  try {
-    const [{ count: invoiceCount }, { count: customerCount }, invoiceStatus] = await Promise.all([
-      supabase.from('invoices').select('*', { count: 'exact', head: true }),
-      supabase.from('customers').select('*', { count: 'exact', head: true }),
-      supabase
-        .from('invoices')
-        .select('SUM(amount) as paid', { count: 'exact' })
-        .eq('status', 'paid')
-        .single(),
-    ]);
+// export async function fetchCardData() {
+//   try {
+//     const [{ count: invoiceCount }, { count: customerCount }, invoiceStatus] = await Promise.all([
+//       supabase.from('invoices').select('*', { count: 'exact', head: true }),
+//       supabase.from('customers').select('*', { count: 'exact', head: true }),
+//       supabase
+//         .from('invoices')
+//         .select('SUM(amount) as paid', { count: 'exact' })
+//         .eq('status', 'paid')
+//         .single(),
+//     ]);
 
-    return {
-      numberOfCustomers: customerCount ?? 0,
-      numberOfInvoices: invoiceCount ?? 0,
-      totalPaidInvoices: formatCurrency(invoiceStatus?.paid ?? 0),
-      totalPendingInvoices: formatCurrency(invoiceStatus?.pending ?? 0),
-    };
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
-  }
-}
+//     return {
+//       numberOfCustomers: customerCount ?? 0,
+//       numberOfInvoices: invoiceCount ?? 0,
+//       totalPaidInvoices: formatCurrency(invoiceStatus?.paid ?? 0),
+//       totalPendingInvoices: formatCurrency(invoiceStatus?.pending ?? 0),
+//     };
+//   } catch (error) {
+//     console.error('Database Error:', error);
+//     throw new Error('Failed to fetch card data.');
+//   }
+// }
 
 // Update remaining functions similarly
 
