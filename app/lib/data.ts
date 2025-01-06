@@ -14,16 +14,16 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function fetchRevenue() {
-  try {
-    const { data, error } = await supabase.from<Revenue>('revenue').select('*');
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
-  }
-}
+// export async function fetchRevenue() {
+//   try {
+//     const { data, error } = await supabase.from<Revenue>('revenue').select('*');
+//     if (error) throw error;
+//     return data;
+//   } catch (error) {
+//     console.error('Database Error:', error);
+//     throw new Error('Failed to fetch revenue data.');
+//   }
+// }
 
 
 export async function fetchLatestInvoices() {
