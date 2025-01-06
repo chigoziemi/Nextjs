@@ -1,17 +1,14 @@
 import bcrypt from 'bcrypt';
 import { createClient } from '@supabase/supabase-js';
-import { invoices, customers, revenue, users } from '../lib/placeholder-data';
+import { users, customers, invoices, revenue } from '../lib/placeholder-data';
 
 // Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function seedUsers() {
   try {
-    const { error: extensionError } = await supabase.rpc('uuid_generate_v4');
-    if (extensionError) console.warn('UUID extension error:', extensionError.message);
-
     const { error } = await supabase.from('users').upsert(
       users.map((user) => ({
         id: user.id,
@@ -27,31 +24,8 @@ async function seedUsers() {
   }
 }
 
-async function seedInvoices() {
-  try {
-    const { error: extensionError } = await supabase.rpc('uuid_generate_v4');
-    if (extensionError) console.warn('UUID extension error:', extensionError.message);
-
-    const { error } = await supabase.from('invoices').upsert(
-      invoices.map((invoice) => ({
-        customer_id: invoice.customer_id,
-        amount: invoice.amount,
-        status: invoice.status,
-        date: invoice.date,
-      })),
-      { onConflict: 'id' }
-    );
-    if (error) throw error;
-  } catch (error) {
-    console.error('Error seeding invoices:', error);
-  }
-}
-
 async function seedCustomers() {
   try {
-    const { error: extensionError } = await supabase.rpc('uuid_generate_v4');
-    if (extensionError) console.warn('UUID extension error:', extensionError.message);
-
     const { error } = await supabase.from('customers').upsert(
       customers.map((customer) => ({
         id: customer.id,
@@ -64,6 +38,23 @@ async function seedCustomers() {
     if (error) throw error;
   } catch (error) {
     console.error('Error seeding customers:', error);
+  }
+}
+
+async function seedInvoices() {
+  try {
+    const { error } = await supabase.from('invoices').upsert(
+      invoices.map((invoice) => ({
+        customer_id: invoice.customer_id,
+        amount: invoice.amount,
+        status: invoice.status,
+        date: invoice.date,
+      })),
+      { onConflict: 'id' }
+    );
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error seeding invoices:', error);
   }
 }
 
