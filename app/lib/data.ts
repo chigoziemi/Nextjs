@@ -25,6 +25,7 @@ export async function fetchRevenue() {
   }
 }
 
+
 export async function fetchLatestInvoices() {
   try {
     const { data, error } = await supabase
